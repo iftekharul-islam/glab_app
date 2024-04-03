@@ -7,20 +7,22 @@ const props = defineProps({
     required: false,
   },
   checkoutData: {
-    type: null,
+    type: Object,
     required: true,
-  },
+  }
 })
 
 const emit = defineEmits([
   'update:currentStep',
   'update:checkout-data',
+  'update:view-checkout',
 ])
 
 const checkoutCartDataLocal = ref(props.checkoutData)
 
 const removeItem = item => {
   checkoutCartDataLocal.value.cartItems = checkoutCartDataLocal.value.cartItems.filter(i => i.id !== item.id)
+  updateCartData()
 }
 
 const totalCost = computed(() => {
@@ -30,18 +32,36 @@ const totalCost = computed(() => {
 })
 
 const updateCartData = () => {
+  console.log('updated on child to emit', checkoutCartDataLocal.value)
   emit('update:checkout-data', checkoutCartDataLocal.value)
 }
 
+const isSnackbarTopEndVisible = ref(false);
+
 const nextStep = () => {
+  if(!checkoutCartDataLocal.value.cartItems.length) {
+    isSnackbarTopEndVisible.value = true
+    return
+  }
   updateCartData()
   emit('update:currentStep', props.currentStep ? props.currentStep + 1 : 1)
 }
 
-watch(() => props.currentStep, updateCartData)
+watchEffect(() =>
+  console.log('updated on watch from child', checkoutCartDataLocal.value),
+  props.currentStep,
+  updateCartData
+)
 </script>
 
 <template>
+  <VSnackbar
+    v-model="isSnackbarTopEndVisible"
+    location="top end"
+    :timeout="2000"
+  >
+    Cart item is empty . Please add product to move forward
+  </VSnackbar>
   <VRow v-if="checkoutCartDataLocal">
     <VCol
       cols="12"
@@ -126,6 +146,7 @@ watch(() => props.currentStep, updateCartData)
                 />
 
                 <AppTextField
+                  @change="updateCartData"
                   v-model="item.quantity"
                   type="number"
                   style="inline-size: 9.375rem;"
@@ -148,15 +169,6 @@ watch(() => props.currentStep, updateCartData)
                     ${{ item.discountPrice }}
                   </div>
                 </div>
-
-                <div>
-                  <VBtn
-                    variant="tonal"
-                    size="small"
-                  >
-                    move to wishlist
-                  </VBtn>
-                </div>
               </div>
             </div>
           </div>
@@ -167,22 +179,24 @@ watch(() => props.currentStep, updateCartData)
       <div v-else>
         <VImg :src="emptyCartImg" />
       </div>
-
-      <!-- 👉 Add more from wishlist -->
-      <div
-        class="d-flex align-center justify-space-between rounded py-2 px-5 text-base mt-4"
-        style="border: 1px solid rgb(var(--v-theme-primary));"
-      >
-        <a
-          href="#"
-          class="font-weight-medium"
-        >Add more products from wishlist</a>
-        <VIcon
-          icon="tabler-arrow-right"
-          size="16"
-          class="flip-in-rtl text-primary"
-        />
-      </div>
+      <VRow>
+        <VCol
+          cols="3"
+          md="4">
+          <a
+            class="d-flex align-center justify-space-between rounded py-2 px-5 text-base mt-4"
+            style="border: 1px solid rgb(var(--v-theme-primary));"
+            @click="emit('update:view-checkout', false)"
+          >
+            <VIcon
+              icon="tabler-arrow-left"
+              size="16"
+              class="flip-in-rtl text-primary"
+            />
+            Go to Products list
+          </a>
+        </VCol>
+      </VRow>
     </VCol>
 
     <VCol
@@ -245,7 +259,7 @@ watch(() => props.currentStep, updateCartData)
 
             <div class="d-flex justify-space-between mb-2">
               <span>Coupon Discount</span>
-              <a href="#">Apply Coupon</a>
+              $0.00
             </div>
 
             <div class="d-flex justify-space-between mb-2">

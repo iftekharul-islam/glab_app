@@ -13,6 +13,7 @@ const props = defineProps({
 const emit = defineEmits([
   'update:currentStep',
   'update:checkout-data',
+  'update:view-checkout',
 ])
 
 const selectedDeliveryAddress = computed(() => {
@@ -218,6 +219,24 @@ const resolveDeliveryMethod = computed(() => {
             </div>
           </template>
         </div>
+        <VRow>
+          <VCol
+            cols="4"
+            md="3">
+            <VBtn
+              color="warning"
+              class="d-flex align-center justify-space-between rounded py-2 px-5 text-base mt-4"
+              @click="emit('update:view-checkout', false)"
+            >
+              <VIcon
+                icon="tabler-arrow-left"
+                size="16"
+                class="flip-in-rtl text-white"
+              />
+              Go to Products list
+            </VBtn>
+          </VCol>
+        </VRow>
       </VCol>
 
       <VCol

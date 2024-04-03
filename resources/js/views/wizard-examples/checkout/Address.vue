@@ -13,6 +13,7 @@ const props = defineProps({
 const emit = defineEmits([
   'update:currentStep',
   'update:checkout-data',
+  'update:view-checkout',
 ])
 
 const checkoutAddressDataLocal = ref(props.checkoutData)
@@ -76,6 +77,10 @@ const nextStep = () => {
   emit('update:currentStep', props.currentStep ? props.currentStep + 1 : 1)
 }
 
+const sendToPrevious = () => {
+  emit('update:currentStep', props.currentStep - 1)
+}
+
 watch(() => props.currentStep, updateAddressData)
 </script>
 
@@ -119,29 +124,12 @@ watch(() => props.currentStep, updateAddressData)
             <p class="text-sm mb-3">
               Mobile: {{ item.subtitle }}
             </p>
-            <VDivider />
-            <div class="pt-2">
-              <a
-                href="#"
-                class="me-4"
-              >Edit</a>
-              <a href="#">Remove</a>
-            </div>
           </div>
         </template>
       </CustomRadios>
 
-      <!-- 👉 Add New Address -->
-      <VBtn
-        variant="tonal"
-        class="mt-4 mb-6"
-        @click="isEditAddressDialogVisible = !isEditAddressDialogVisible"
-      >
-        Add New Address
-      </VBtn>
-
       <!-- 👉 Delivery options -->
-      <h6 class="text-h6 mb-4">
+      <h6 class="text-h6 my-4">
         Choose Delivery Speed
       </h6>
 
@@ -180,6 +168,24 @@ watch(() => props.currentStep, updateAddressData)
           </div>
         </template>
       </CustomRadiosWithIcon>
+      <VRow>
+        <VCol
+          cols="4"
+          md="4">
+          <a
+            class="d-flex align-center justify-space-between rounded py-2 px-5 text-base mt-4"
+            style="border: 1px solid rgb(var(--v-theme-primary));"
+            @click="emit('update:view-checkout', false)"
+          >
+            <VIcon
+              icon="tabler-arrow-left"
+              size="16"
+              class="flip-in-rtl text-primary"
+            />
+            Go to Products list
+          </a>
+        </VCol>
+      </VRow>
     </VCol>
 
     <VCol
@@ -264,9 +270,14 @@ watch(() => props.currentStep, updateAddressData)
           </span>
         </VCardText>
       </VCard>
-
       <VBtn
-        block
+        color="warning"
+        class="mt-4 mr-2"
+        @click="sendToPrevious"
+      >
+      Previous
+      </VBtn>
+      <VBtn
         class="mt-4"
         @click="nextStep"
       >

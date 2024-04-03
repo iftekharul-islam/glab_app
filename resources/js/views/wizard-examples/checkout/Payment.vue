@@ -47,6 +47,14 @@ const nextStep = () => {
   emit('update:currentStep', prop.currentStep ? prop.currentStep + 1 : 1)
 }
 
+const sendToPrevious = () => {
+  emit('update:currentStep', props.currentStep - 1)
+}
+const sendToAddress = () => {
+  updateCartData()
+  emit('update:currentStep', 1)
+}
+
 watch(() => prop.currentStep, updateCartData)
 </script>
 
@@ -169,6 +177,13 @@ watch(() => prop.currentStep, updateCartData)
                 />
 
                 <div class="mt-4">
+                  <VBtn
+                    color="warning"
+                    class="mr-2"
+                    @click="sendToPrevious"
+                  >
+                    Previous
+                  </VBtn>
                   <VBtn
                     class="me-4"
                     @click="nextStep"
@@ -306,7 +321,13 @@ watch(() => prop.currentStep, updateCartData)
           </template>
 
           <h6 class="text-h6">
-            <a href="#">Change address</a>
+            <VBtn
+              class="me-4"
+              @click="sendToAddress"
+            >
+              Save Changes
+            </VBtn>
+<!--            <a @click="sendToAddress">Change address</a>-->
           </h6>
         </VCardText>
       </VCard>
