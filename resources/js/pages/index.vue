@@ -11,8 +11,80 @@ import customCart from '@images/svg/cart.svg'
 import customPayment from '@images/svg/payment.svg'
 import customTrending from '@images/svg/trending.svg'
 
+import watch from '@images/eCommerce/1.png'
+import keyboard from '@images/eCommerce/10.png'
+import show from '@images/eCommerce/11.png'
+import ipad from '@images/eCommerce/12.png'
+import projector from '@images/eCommerce/14.png'
+import bag from '@images/eCommerce/17.png'
+import waterPod from '@images/eCommerce/19.png'
+import iphone from '@images/eCommerce/2.png'
+import watch2 from '@images/eCommerce/25.png'
+import vr from '@images/eCommerce/18.png'
+import onePlus from '@images/eCommerce/9.png'
+
 
 definePage({ meta: { layout: 'blank' } })
+
+const { data: fetchProducts } = await useApi('/all-products');
+const allPackages = ref(fetchProducts.value.products)
+
+console.log('allPackages')
+console.log(allPackages.value)
+
+const cartItems = allPackages.value
+
+// const cartItems = [
+//   {
+//     id: 1,
+//     name: 'Google - Google Home - White',
+//     seller: 'Google',
+//     inStock: true,
+//     rating: 4,
+//     price: 299,
+//     discountPrice: 359,
+//     image: googleHome,
+//     quantity: 1,
+//     estimatedDelivery: '18th Nov 2021',
+//   },
+//   {
+//     id: 2,
+//     name: 'Apple iPhone 11 (64GB, Black)',
+//     seller: 'Apple',
+//     inStock: true,
+//     rating: 4,
+//     price: 899,
+//     discountPrice: 999,
+//     image: iphone11,
+//     quantity: 1,
+//     estimatedDelivery: '20th Nov 2021',
+//   },
+//   {
+//     id: 3,
+//     name: 'Apple airpods (White)',
+//     seller: 'Apple',
+//     inStock: true,
+//     rating: 4,
+//     price: 299,
+//     discountPrice: 599,
+//     image: headphone,
+//     quantity: 1,
+//     estimatedDelivery: '18th Nov 2021',
+//   },
+//   {
+//     id: 3,
+//     name: 'Apple airpods (White)',
+//     seller: 'Apple',
+//     inStock: true,
+//     rating: 4,
+//     price: 299,
+//     discountPrice: 599,
+//     image: headphone,
+//     quantity: 1,
+//     estimatedDelivery: '18th Nov 2021',
+//   }
+// ]
+
 
 const checkoutSteps = [
   {
@@ -76,56 +148,6 @@ const checkoutData = ref({
     },
   ],
 })
-const cartItems = [
-  {
-    id: 1,
-    name: 'Google - Google Home - White',
-    seller: 'Google',
-    inStock: true,
-    rating: 4,
-    price: 299,
-    discountPrice: 359,
-    image: googleHome,
-    quantity: 1,
-    estimatedDelivery: '18th Nov 2021',
-  },
-  {
-    id: 2,
-    name: 'Apple iPhone 11 (64GB, Black)',
-    seller: 'Apple',
-    inStock: true,
-    rating: 4,
-    price: 899,
-    discountPrice: 999,
-    image: iphone11,
-    quantity: 1,
-    estimatedDelivery: '20th Nov 2021',
-  },
-  {
-    id: 3,
-    name: 'Apple airpods (White)',
-    seller: 'Apple',
-    inStock: true,
-    rating: 4,
-    price: 299,
-    discountPrice: 599,
-    image: headphone,
-    quantity: 1,
-    estimatedDelivery: '18th Nov 2021',
-  },
-  {
-    id: 3,
-    name: 'Apple airpods (White)',
-    seller: 'Apple',
-    inStock: true,
-    rating: 4,
-    price: 299,
-    discountPrice: 599,
-    image: headphone,
-    quantity: 1,
-    estimatedDelivery: '18th Nov 2021',
-  }
-]
 
 const addItemToCheckout = (item) => {
   const existingItem = checkoutData.value.cartItems.find(cartItem => cartItem.id === item.id);
@@ -196,7 +218,21 @@ const currentStep = ref(0)
         <p class="text-subtitle-1">
           Select your desire products from here
         </p>
+        <VBadge
+          @click="actionToCheckout"
+          :content="totalItems"
+          bordered
+          color="error"
+        >
+          <VBtn color="info">
+            <VIcon icon="tabler-shopping-cart-plus" />
+          </VBtn>
+        </VBadge>
+        <VBtn class="ml-5" color="warning" :to="{ name: 'product' }">
+          Go To Inventory
+        </VBtn>
       </VCardText>
+
       <!-- 👉 Cart items -->
       <div
         v-if="cartItems.length"
@@ -206,12 +242,13 @@ const currentStep = ref(0)
             <VCol
               col="2" class="mx-1 my-1">
               <VCard>
-                <div class="d-flex align-center pa-6 position-relative flex-column flex-sm-column">
+                <div class="d-flex align-center pa-3 position-relative flex-column flex-sm-column">
 
                   <div>
                     <VImg
                       width="140"
-                      :src="item.image"
+                      :src="item.img_url"
+                      height="90px"
                     />
                   </div>
 
@@ -226,11 +263,11 @@ const currentStep = ref(0)
                           <span class="d-inline-block text-primary">  {{ item.seller }}</span>
                         </div>
                         <VChip
-                          :color="item.inStock ? 'success' : 'error'"
+                          :color="item.in_stock ? 'success' : 'error'"
                           label
                           size="small"
                         >
-                          {{ item.inStock ? 'In Stock' : 'Out of Stock' }}
+                          {{ item.in_stock ? 'In Stock' : 'Out of Stock' }}
                         </VChip>
                       </div>
 
@@ -254,7 +291,7 @@ const currentStep = ref(0)
                         </div>
                         <div>/</div>
                         <div class="text-decoration-line-through">
-                          ${{ item.discountPrice }}
+                          ${{ item.discount_price }}
                         </div>
                       </div>
 
@@ -275,16 +312,7 @@ const currentStep = ref(0)
         </VRow>
       </div>
       <VCardText class="text-center mt-4">
-        <VBadge
-          :content="totalItems"
-          bordered
-          color="error"
-        >
-          <VBtn color="primary">
-            <VIcon icon="tabler-shopping-cart-plus" />
-          </VBtn>
-        </VBadge>
-        <VBtn color="primary" @click="actionToCheckout" class="ml-2">
+        <VBtn color="success" @click="actionToCheckout" class="ml-2">
           Proceed to checkout
         </VBtn>
       </VCardText>
