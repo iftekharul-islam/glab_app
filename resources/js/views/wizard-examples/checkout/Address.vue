@@ -211,7 +211,7 @@ watch(() => props.currentStep, updateAddressData)
                 <img
                   height="70"
                   width="60"
-                  :src="product.image"
+                  :src="product.img_url"
                   class="me-4"
                 >
               </template>

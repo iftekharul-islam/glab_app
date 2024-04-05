@@ -1,7 +1,8 @@
 <script setup>
-import watch from '@images/eCommerce/1.png'
+
+import appleWatch from '@images/eCommerce/1.png'
 import keyboard from '@images/eCommerce/10.png'
-import show from '@images/eCommerce/11.png'
+import shoe from '@images/eCommerce/11.png'
 import ipad from '@images/eCommerce/12.png'
 import projector from '@images/eCommerce/14.png'
 import bag from '@images/eCommerce/17.png'
@@ -12,22 +13,17 @@ import vr from '@images/eCommerce/18.png'
 import onePlus from '@images/eCommerce/9.png'
 
 const props = defineProps({
-  billingAddress: {
+  productDetails: {
     type: Object,
     required: false,
     default: () => ({
-      firstName: '',
-      lastName: '',
-      selectedCountry: null,
-      addressLine1: '',
-      addressLine2: '',
-      landmark: '',
-      contact: '',
-      country: null,
-      city: '',
-      state: '',
-      zipCode: null,
-      is_stock: false,
+      name: '',
+      seller: '',
+      img_url: '',
+      price: '',
+      discount_price: '',
+      quantity: '',
+      in_stock: 1,
     }),
   },
   isDialogVisible: {
@@ -36,35 +32,60 @@ const props = defineProps({
   },
 })
 
+const isFormValid = ref(false)
+
 const emit = defineEmits([
   'update:isDialogVisible',
   'submit',
 ])
 
-const billingAddress = ref(structuredClone(toRaw(props.billingAddress)))
+console.log(props.productDetails)
+const productDetails = ref(structuredClone(toRaw(props.productDetails)))
+
+console.log('productDetails.value 1')
+console.log(productDetails)
 
 const resetForm = () => {
   emit('update:isDialogVisible', false)
-  billingAddress.value = structuredClone(toRaw(props.billingAddress))
+  productDetails.value = structuredClone(toRaw(props.productDetails))
 }
 
 const capitalizedLabel = (label) => {
-  console.log(label)
-
-  const convertLabelText = label.toString()
-
-  return convertLabelText.charAt(0).toUpperCase() + convertLabelText.slice(1)
+  // console.log(label)
+  //
+  // const convertLabelText = label.toString()
+  //
+  // return convertLabelText.charAt(0).toUpperCase() + convertLabelText.slice(1)
 }
 
+const isSnackbarTopEndVisible = ref(false)
+const snackBarMsg = ref('')
+const refForm = ref()
 const onFormSubmit = () => {
-  emit('update:isDialogVisible', false)
-  emit('submit', billingAddress.value)
+  refForm.value?.validate().then(({valid}) => {
+    if (valid) {
+      emit('update:isDialogVisible', false)
+      emit('submit', productDetails.value)
+      nextTick(() => {
+        refForm.value?.reset()
+        refForm.value?.resetValidation()
+        isSnackbarTopEndVisible.value = true
+        snackBarMsg.value = 'Product added successfully'
+      })
+    }
+  })
 }
 
+
+watch(props, () => {
+  productDetails.value = structuredClone(toRaw(props.productDetails))
+  console.log('packageDetails.value 2')
+  console.log(productDetails.value)
+})
 
 const images = [
-{
-    value: watch,
+  {
+    value: appleWatch,
     title: 'Apple Watch 1',
   },
   {
@@ -72,7 +93,7 @@ const images = [
     title: 'Keyboard',
   },
   {
-    value: show,
+    value: shoe,
     title: 'Show',
   },
   {
@@ -108,9 +129,17 @@ const images = [
     title: 'One plus mobile',
   },
 ]
+
 </script>
 
 <template>
+  <VSnackbar
+    v-model="isSnackbarTopEndVisible"
+    location="top end"
+    :timeout="2000"
+  >
+    {{ snackBarMsg }}
+  </VSnackbar>
   <VDialog
     :width="$vuetify.display.smAndDown ? 'auto' : 600 "
     :model-value="props.isDialogVisible"
@@ -119,10 +148,7 @@ const images = [
     <!-- 👉 Dialog close btn -->
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
 
-    <VCard
-      v-if="props.billingAddress"
-      class="pa-sm-10 pa-2"
-    >
+    <VCard class="pa-sm-10 pa-2" >
       <VCardText>
         <!-- 👉 Title -->
         <h4 class="text-h4 text-center mb-2">
@@ -133,15 +159,19 @@ const images = [
         </p>
 
         <!-- 👉 Form -->
-        <VForm @submit.prevent="onFormSubmit">
+        <VForm
+          ref="refForm"
+          v-model="isFormValid"
+          @submit.prevent="onFormSubmit">
           <VRow>
             <!-- 👉 First Name -->
             <VCol
               cols="12"
             >
               <AppTextField
-                v-model="billingAddress.name"
+                v-model="productDetails.name"
                 label="Product Name"
+                :rules="[requiredValidator]"
                 placeholder="Apple airpoed"
               />
             </VCol>
@@ -151,8 +181,9 @@ const images = [
               cols="12"
             >
               <AppTextField
-                v-model="billingAddress.seller"
+                v-model="productDetails.seller"
                 label="Seller name"
+                :rules="[requiredValidator]"
                 placeholder="Apple"
               />
             </VCol>
@@ -162,10 +193,11 @@ const images = [
               cols="12"
               md="6"
             >
-              Available In Stock
               <VCheckbox
-                v-model="billingAddress.is_stock"
-                :label="capitalizedLabel(billingAddress.is_stock)"
+                v-model="productDetails.in_stock"
+                :true-value="1"
+                :false-value="0"
+                label="Available In Stock"
               />
             </VCol>
 
@@ -175,8 +207,9 @@ const images = [
             >
               <AppTextField
                 type="number"
-                v-model="billingAddress.quantity"
+                v-model="productDetails.quantity"
                 label="Quantity"
+                :rules="[requiredValidator]"
                 placeholder="Enter quantity"
                 searchable
               />
@@ -187,7 +220,7 @@ const images = [
               cols="12"
               md="12">
               <AppSelect
-                v-model="billingAddress.img_url"
+                v-model="productDetails.img_url"
                 label="Select Image (Make it simple for test purpose)"
                 placeholder="Select one"
                 :rules="[requiredValidator]"
@@ -198,8 +231,9 @@ const images = [
             <!-- 👉 Product Price -->
             <VCol cols="6">
               <AppTextField
-                v-model="billingAddress.price"
+                v-model="productDetails.price"
                 label="Product Price"
+                :rules="[requiredValidator]"
                 placeholder="Enter price"
               />
             </VCol>
@@ -207,8 +241,9 @@ const images = [
             <!-- 👉 Discount Price -->
             <VCol cols="6">
               <AppTextField
-                v-model="billingAddress.discount_price"
+                v-model="productDetails.discount_price"
                 label="Discount Price"
+                :rules="[requiredValidator]"
                 placeholder="Enter discount price"
               />
             </VCol>

@@ -115,7 +115,7 @@ watchEffect(() =>
             <div>
               <VImg
                 width="140"
-                :src="item.image"
+                :src="item.img_url"
               />
             </div>
 
@@ -208,40 +208,40 @@ watchEffect(() =>
         variant="outlined"
       >
         <!-- 👉 payment offer -->
-        <VCardText>
-          <h6 class="text-h6 mb-4">
-            Offer
-          </h6>
+<!--        <VCardText>-->
+<!--          <h6 class="text-h6 mb-4">-->
+<!--            Offer-->
+<!--          </h6>-->
 
-          <div class="d-flex align-center gap-4 flex-wrap">
-            <AppTextField
-              v-model="checkoutCartDataLocal.promoCode"
-              placeholder="Enter Promo Code"
-              style="min-inline-size: 200px;"
-            />
+<!--          <div class="d-flex align-center gap-4 flex-wrap">-->
+<!--            <AppTextField-->
+<!--              v-model="checkoutCartDataLocal.promoCode"-->
+<!--              placeholder="Enter Promo Code"-->
+<!--              style="min-inline-size: 200px;"-->
+<!--            />-->
 
-            <VBtn
-              variant="tonal"
-              @click="updateCartData"
-            >
-              Apply
-            </VBtn>
-          </div>
+<!--            <VBtn-->
+<!--              variant="tonal"-->
+<!--              @click="updateCartData"-->
+<!--            >-->
+<!--              Apply-->
+<!--            </VBtn>-->
+<!--          </div>-->
 
-          <!-- 👉 Gift wrap banner -->
-          <div class="bg-var-theme-background rounded pa-6 mt-4">
-            <h6 class="text-h6 mb-2">
-              Buying gift for a loved one?
-            </h6>
-            <p class="mb-2">
-              Gift wrap and personalized message on card, Only for $2.
-            </p>
+<!--          &lt;!&ndash; 👉 Gift wrap banner &ndash;&gt;-->
+<!--          <div class="bg-var-theme-background rounded pa-6 mt-4">-->
+<!--            <h6 class="text-h6 mb-2">-->
+<!--              Buying gift for a loved one?-->
+<!--            </h6>-->
+<!--            <p class="mb-2">-->
+<!--              Gift wrap and personalized message on card, Only for $2.-->
+<!--            </p>-->
 
-            <h6 class="text-h6">
-              <a href="#">Add a gift wrap</a>
-            </h6>
-          </div>
-        </VCardText>
+<!--            <h6 class="text-h6">-->
+<!--              <a href="#">Add a gift wrap</a>-->
+<!--            </h6>-->
+<!--          </div>-->
+<!--        </VCardText>-->
 
         <VDivider />
 

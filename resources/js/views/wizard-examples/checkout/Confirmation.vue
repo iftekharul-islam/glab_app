@@ -16,6 +16,16 @@ const emit = defineEmits([
   'update:view-checkout',
 ])
 
+const getTimeNow = () => {
+  const date = new Date()
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+  const ampm = hours >= 12 ? 'pm' : 'am'
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${hours}:${minutes}${ampm}`
+}
+
+const timeNow = getTimeNow();
+
 const selectedDeliveryAddress = computed(() => {
   return props.checkoutData.addresses.filter(address => {
     return address.value === props.checkoutData.deliveryAddress
@@ -60,7 +70,7 @@ const resolveDeliveryMethod = computed(() => {
           icon="tabler-clock"
           class="text-high-emphasis"
         />
-        <span>Time placed: 25/05/2020 13:35pm</span>
+        <span>Time placed: {{ timeNow }}</span>
       </div>
     </div>
 
@@ -176,7 +186,7 @@ const resolveDeliveryMethod = computed(() => {
               <div>
                 <VImg
                   width="80"
-                  :src="item.image"
+                  :src="item.img_url"
                 />
               </div>
 
