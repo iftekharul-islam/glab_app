@@ -42,25 +42,17 @@ const emit = defineEmits([
 console.log(props.productDetails)
 const productDetails = ref(structuredClone(toRaw(props.productDetails)))
 
-console.log('productDetails.value 1')
-console.log(productDetails)
 
 const resetForm = () => {
   emit('update:isDialogVisible', false)
   productDetails.value = structuredClone(toRaw(props.productDetails))
 }
 
-const capitalizedLabel = (label) => {
-  // console.log(label)
-  //
-  // const convertLabelText = label.toString()
-  //
-  // return convertLabelText.charAt(0).toUpperCase() + convertLabelText.slice(1)
-}
-
 const isSnackbarTopEndVisible = ref(false)
 const snackBarMsg = ref('')
 const refForm = ref()
+
+
 const onFormSubmit = () => {
   refForm.value?.validate().then(({valid}) => {
     if (valid) {
@@ -79,8 +71,6 @@ const onFormSubmit = () => {
 
 watch(props, () => {
   productDetails.value = structuredClone(toRaw(props.productDetails))
-  console.log('packageDetails.value 2')
-  console.log(productDetails.value)
 })
 
 const images = [
@@ -164,7 +154,7 @@ const images = [
           v-model="isFormValid"
           @submit.prevent="onFormSubmit">
           <VRow>
-            <!-- 👉 First Name -->
+            <!-- 👉 Name -->
             <VCol
               cols="12"
             >
@@ -176,7 +166,7 @@ const images = [
               />
             </VCol>
 
-            <!-- 👉 Last Name -->
+            <!-- 👉 seller -->
             <VCol
               cols="12"
             >
@@ -188,7 +178,7 @@ const images = [
               />
             </VCol>
 
-            <!-- 👉 Last Name -->
+            <!-- 👉 in stock -->
             <VCol
               cols="12"
               md="6"

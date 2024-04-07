@@ -12,13 +12,13 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 1); // Default page is 1
-        $perPage = $request->input('perPage', 10); // Default pagination size is 10
+        $page = $request->input('page', 1);
+        $perPage = $request->input('perPage', 10);
 
         // Start building the query
         $products = Product::orderBy('id', 'DESC')->paginate($perPage, ['*'], 'page', $page);
 
-        // Get the total count of users
+        // Get the total count of products
         $totalPackages = $products->total();
 
 
@@ -35,6 +35,7 @@ class ProductController extends Controller
             $product = Product::findOrFail($id);
 
             return response()->json([
+                'message' => 'Product retrieved successfully',
                 'product' => $product
             ], 200);
 
@@ -117,7 +118,7 @@ class ProductController extends Controller
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function productsAll()
+    public function allProducts()
     {
         $products = Product::where('in_stock', '>', 0)->orderBy('id', 'DESC')->get();
         return response()->json([
