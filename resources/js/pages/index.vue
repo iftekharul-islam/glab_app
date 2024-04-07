@@ -29,62 +29,7 @@ definePage({ meta: { layout: 'blank' } })
 const { data: fetchProducts } = await useApi('/all-products');
 const allPackages = ref(fetchProducts.value.products)
 
-console.log('allPackages')
-console.log(allPackages.value)
-
 const cartItems = allPackages.value
-
-// const cartItems = [
-//   {
-//     id: 1,
-//     name: 'Google - Google Home - White',
-//     seller: 'Google',
-//     inStock: true,
-//     rating: 4,
-//     price: 299,
-//     discountPrice: 359,
-//     image: googleHome,
-//     quantity: 1,
-//     estimatedDelivery: '18th Nov 2021',
-//   },
-//   {
-//     id: 2,
-//     name: 'Apple iPhone 11 (64GB, Black)',
-//     seller: 'Apple',
-//     inStock: true,
-//     rating: 4,
-//     price: 899,
-//     discountPrice: 999,
-//     image: iphone11,
-//     quantity: 1,
-//     estimatedDelivery: '20th Nov 2021',
-//   },
-//   {
-//     id: 3,
-//     name: 'Apple airpods (White)',
-//     seller: 'Apple',
-//     inStock: true,
-//     rating: 4,
-//     price: 299,
-//     discountPrice: 599,
-//     image: headphone,
-//     quantity: 1,
-//     estimatedDelivery: '18th Nov 2021',
-//   },
-//   {
-//     id: 3,
-//     name: 'Apple airpods (White)',
-//     seller: 'Apple',
-//     inStock: true,
-//     rating: 4,
-//     price: 299,
-//     discountPrice: 599,
-//     image: headphone,
-//     quantity: 1,
-//     estimatedDelivery: '18th Nov 2021',
-//   }
-// ]
-
 
 const checkoutSteps = [
   {
@@ -171,19 +116,16 @@ const removeItem = item => {
 }
 
 const updatedData = data => {
-  console.log('Data updated on parent function', data)
   checkoutData.value = data
   updateTotalItems();
 }
 
 const updateViewCheckout = (value) => {
-  console.log('View checkout updated on parent function', value)
   viewCheckout.value = value
   currentStep.value = 0
 }
 
 const emptyViewCheckout = () => {
-  console.log('View checkout updated on parent function')
   checkoutData.value = cleanCheckout.value
   currentStep.value = 0
   viewCheckout.value = false
